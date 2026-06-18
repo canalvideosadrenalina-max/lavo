@@ -26,7 +26,7 @@ export async function buscarHorariosDisponiveis(
     return { horarios: [], error: "Serviços inválidos para este lava-jato" };
   }
 
-  const duracaoTotalMin = servicos.reduce((total, s) => total + s.duracaoMin, 0);
+  const duracaoTotalMin = servicos.reduce((total: number, s) => total + s.duracaoMin, 0);
   const horarios = await obterHorariosDisponiveis(lavaJatoId, data, duracaoTotalMin);
 
   return {
@@ -69,8 +69,8 @@ export async function criarAgendamento(
     return { success: false, error: "Serviços inválidos para este lava-jato" };
   }
 
-  const duracaoTotalMin = servicos.reduce((total, s) => total + s.duracaoMin, 0);
-  const precoTotalCentavos = servicos.reduce((total, s) => total + s.precoCentavos, 0);
+  const duracaoTotalMin = servicos.reduce((total: number, s) => total + s.duracaoMin, 0);
+  const precoTotalCentavos = servicos.reduce((total: number, s) => total + s.precoCentavos, 0);
 
   try {
     const agendamento = await prisma.$transaction(async (tx) => {
