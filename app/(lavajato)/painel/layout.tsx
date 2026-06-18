@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { Header } from "@/components/layout/header";
 
 export default async function PainelLayout({
   children,
@@ -22,5 +23,10 @@ export default async function PainelLayout({
     redirect("/");
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <Header />
+      {children}
+    </>
+  );
 }

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { Header } from "@/components/layout/header";
 
 export default async function ClienteLayout({
   children,
@@ -12,15 +13,18 @@ export default async function ClienteLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    return <>{children}</>;
+  if (user) {
+    const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
+
+    if (dbUser?.role === "LAVAJATO") {
+      redirect("/painel");
+    }
   }
 
-  const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
-
-  if (dbUser?.role === "LAVAJATO") {
-    redirect("/painel");
-  }
-
-  return <>{children}</>;
+  return (
+    <>
+      <Header />
+      {children}
+    </>
+  );
 }
