@@ -17,6 +17,11 @@ enum LavaJatoStatus {
   SUSPENSO
 }
 
+enum TipoDocumento {
+  CPF
+  CNPJ
+}
+
 enum AgendamentoStatus {
   PENDENTE
   CONFIRMADO
@@ -38,52 +43,101 @@ model User {
 }
 
 model LavaJato {
-  id             String         @id @default(cuid())
-  ownerId        String         @unique @map("owner_id")
-  owner          User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  nome           String
-  slug           String         @unique
-  endereco       String
-  cidade         String
-  estado         String
-  status         LavaJatoStatus @default(PENDENTE)
-  horaAbertura   String         @map("hora_abertura")
-  horaFechamento String         @map("hora_fechamento")
-  createdAt      DateTime       @default(now()) @map("created_at")
-  updatedAt      DateTime       @updatedAt @map("updated_at")
-  servicos       Servico[]
-  agendamentos   Agendamento[]
+  id               String                   @id @default(cuid())
+  ownerId          String                   @unique @map("owner_id")
+  owner            User                     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  nome             String
+  slug             String                   @unique
+  tipoDocumento    TipoDocumento            @map("tipo_documento")
+  documento        String                   @unique
+  razaoSocial      String?                  @map("razao_social")
+  telefone         String?
+  endereco         String
+  cidade           String
+  estado           String
+  status           LavaJatoStatus           @default(PENDENTE)
+  horaAbertura     String                   @map("hora_abertura")
+  horaFechamento   String                   @map("hora_fechamento")
+  intervaloSlotMin Int                      @default(30) @map("intervalo_slot_min")
+  vagasSimultaneas Int                      @default(1) @map("vagas_simultaneas")
+  disponivelAgora  Boolean                  @default(true) @map("disponivel_agora")
+  createdAt        DateTime                 @default(now()) @map("created_at")
+  updatedAt        DateTime                 @updatedAt @map("updated_at")
+  servicos         Servico[]
+  agendamentos     Agendamento[]
+  disponibilidades DisponibilidadeSemanal[]
   @@map("lava_jatos")
   @@index([cidade])
 }
 
+model DisponibilidadeSemanal {
+  id             String   @id @default(cuid())
+  lavaJatoId     String   @map("lavajato_id")
+  lavaJato       LavaJato @relation(fields: [lavaJatoId], references: [id], onDelete: Cascade)
+  diaSemana      Int      @map("dia_semana")
+  aberto         Boolean  @default(true)
+  horaAbertura   String?  @map("hora_abertura")
+  horaFechamento String?  @map("hora_fechamento")
+  temAlmoco      Boolean  @default(false) @map("tem_almoco")
+  almocoInicio   String?  @map("almoco_inicio")
+  almocoFim      String?  @map("almoco_fim")
+  @@unique([lavaJatoId, diaSemana])
+  @@map("disponibilidade_semanal")
+}
+
+model TipoServico {
+  id        String    @id @default(cuid())
+  slug      String    @unique
+  nome      String
+  descricao String?
+  ordem     Int       @default(0)
+  servicos  Servico[]
+  @@map("tipos_servico")
+}
+
 model Servico {
-  id            String        @id @default(cuid())
-  lavaJatoId    String        @map("lavajato_id")
-  lavaJato      LavaJato      @relation(fields: [lavaJatoId], references: [id], onDelete: Cascade)
-  nome          String
-  precoCentavos Int           @map("preco_centavos")
-  duracaoMin    Int           @map("duracao_min")
-  ativo         Boolean       @default(true)
-  createdAt     DateTime      @default(now()) @map("created_at")
-  agendamentos  Agendamento[]
+  id            String               @id @default(cuid())
+  lavaJatoId    String               @map("lavajato_id")
+  tipoServicoId String               @map("tipo_servico_id")
+  lavaJato      LavaJato             @relation(fields: [lavaJatoId], references: [id], onDelete: Cascade)
+  tipoServico   TipoServico          @relation(fields: [tipoServicoId], references: [id])
+  precoCentavos Int                  @map("preco_centavos")
+  duracaoMin    Int                  @map("duracao_min")
+  ativo         Boolean              @default(true)
+  createdAt     DateTime             @default(now()) @map("created_at")
+  agendamentos  AgendamentoServico[]
+  @@unique([lavaJatoId, tipoServicoId])
   @@map("servicos")
   @@index([lavaJatoId])
 }
 
 model Agendamento {
-  id         String            @id @default(cuid())
-  clienteId  String            @map("cliente_id")
-  cliente    User              @relation(fields: [clienteId], references: [id])
-  lavaJatoId String            @map("lavajato_id")
-  lavaJato   LavaJato          @relation(fields: [lavaJatoId], references: [id])
-  servicoId  String            @map("servico_id")
-  servico    Servico           @relation(fields: [servicoId], references: [id])
-  dataHora   DateTime          @map("data_hora")
-  status     AgendamentoStatus @default(PENDENTE)
-  createdAt  DateTime          @default(now()) @map("created_at")
-  updatedAt  DateTime          @updatedAt @map("updated_at")
+  id                 String               @id @default(cuid())
+  clienteId          String               @map("cliente_id")
+  cliente            User                 @relation(fields: [clienteId], references: [id])
+  lavaJatoId         String               @map("lavajato_id")
+  lavaJato           LavaJato             @relation(fields: [lavaJatoId], references: [id])
+  dataHora           DateTime             @map("data_hora")
+  precoTotalCentavos Int                  @map("preco_total_centavos")
+  duracaoTotalMin    Int                  @map("duracao_total_min")
+  status             AgendamentoStatus    @default(CONFIRMADO)
+  canceladoTarde     Boolean              @default(false) @map("cancelado_tarde")
+  createdAt          DateTime             @default(now()) @map("created_at")
+  updatedAt          DateTime             @updatedAt @map("updated_at")
+  servicos           AgendamentoServico[]
   @@map("agendamentos")
   @@index([lavaJatoId, dataHora])
   @@index([clienteId])
+}
+
+model AgendamentoServico {
+  id            String      @id @default(cuid())
+  agendamentoId String      @map("agendamento_id")
+  servicoId     String      @map("servico_id")
+  precoCentavos Int         @map("preco_centavos")
+  duracaoMin    Int         @map("duracao_min")
+  agendamento   Agendamento @relation(fields: [agendamentoId], references: [id], onDelete: Cascade)
+  servico       Servico     @relation(fields: [servicoId], references: [id])
+  @@unique([agendamentoId, servicoId])
+  @@map("agendamento_servicos")
 }
