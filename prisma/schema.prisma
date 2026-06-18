@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  CLIENTE
+  LAVAJATO
+}
+
+enum LavaJatoStatus {
+  PENDENTE
+  ATIVO
+  SUSPENSO
+}
+
+enum AgendamentoStatus {
+  PENDENTE
+  CONFIRMADO
+  CONCLUIDO
+  CANCELADO
+}
+
+model User {
+  id           String        @id
+  email        String        @unique
+  nome         String
+  telefone     String?
+  role         UserRole
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  lavaJato     LavaJato?
+  agendamentos Agendamento[]
+  @@map("users")
+}
+
+model LavaJato {
+  id             String         @id @default(cuid())
+  ownerId        String         @unique @map("owner_id")
+  owner          User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  nome           String
+  slug           String         @unique
+  endereco       String
+  cidade         String
+  estado         String
+  status         LavaJatoStatus @default(PENDENTE)
+  horaAbertura   String         @map("hora_abertura")
+  horaFechamento String         @map("hora_fechamento")
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+  servicos       Servico[]
+  agendamentos   Agendamento[]
+  @@map("lava_jatos")
+  @@index([cidade])
+}
+
+model Servico {
+  id            String        @id @default(cuid())
+  lavaJatoId    String        @map("lavajato_id")
+  lavaJato      LavaJato      @relation(fields: [lavaJatoId], references: [id], onDelete: Cascade)
+  nome          String
+  precoCentavos Int           @map("preco_centavos")
+  duracaoMin    Int           @map("duracao_min")
+  ativo         Boolean       @default(true)
+  createdAt     DateTime      @default(now()) @map("created_at")
+  agendamentos  Agendamento[]
+  @@map("servicos")
+  @@index([lavaJatoId])
+}
+
+model Agendamento {
+  id         String            @id @default(cuid())
+  clienteId  String            @map("cliente_id")
+  cliente    User              @relation(fields: [clienteId], references: [id])
+  lavaJatoId String            @map("lavajato_id")
+  lavaJato   LavaJato          @relation(fields: [lavaJatoId], references: [id])
+  servicoId  String            @map("servico_id")
+  servico    Servico           @relation(fields: [servicoId], references: [id])
+  dataHora   DateTime          @map("data_hora")
+  status     AgendamentoStatus @default(PENDENTE)
+  createdAt  DateTime          @default(now()) @map("created_at")
+  updatedAt  DateTime          @updatedAt @map("updated_at")
+  @@map("agendamentos")
+  @@index([lavaJatoId, dataHora])
+  @@index([clienteId])
+}
