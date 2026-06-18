@@ -30,16 +30,29 @@ enum AgendamentoStatus {
 }
 
 model User {
-  id           String        @id
-  email        String        @unique
-  nome         String
-  telefone     String?
-  role         UserRole
-  createdAt    DateTime      @default(now()) @map("created_at")
-  updatedAt    DateTime      @updatedAt @map("updated_at")
-  lavaJato     LavaJato?
-  agendamentos Agendamento[]
+  id                 String        @id
+  email              String        @unique
+  nome               String
+  telefone           String        @default("")
+  telefoneConfirmado Boolean       @default(false) @map("telefone_confirmado")
+  role               UserRole
+  createdAt          DateTime      @default(now()) @map("created_at")
+  updatedAt          DateTime      @updatedAt @map("updated_at")
+  lavaJato           LavaJato?
+  agendamentos       Agendamento[]
   @@map("users")
+}
+
+model OtpCode {
+  id        String   @id @default(cuid())
+  telefone  String
+  codigo    String
+  expiraEm  DateTime @map("expira_em")
+  usado     Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([telefone, usado])
+  @@map("otp_codes")
 }
 
 model LavaJato {

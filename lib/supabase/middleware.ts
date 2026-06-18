@@ -32,10 +32,13 @@ export async function updateSession(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const role = user?.user_metadata?.role as string | undefined;
 
-  const isAuthPage = pathname === "/login" || pathname === "/cadastro";
+  const isAuthPage =
+    pathname === "/login" ||
+    pathname === "/cadastro" ||
+    pathname === "/confirmar-telefone";
   const isPainel = pathname.startsWith("/painel");
 
-  if (isAuthPage && user) {
+  if (isAuthPage && user && pathname !== "/confirmar-telefone") {
     const url = request.nextUrl.clone();
     url.pathname = role === "LAVAJATO" ? "/painel" : "/";
     return NextResponse.redirect(url);

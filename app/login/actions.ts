@@ -18,5 +18,9 @@ export async function login(formData: FormData) {
 
   const user = await prisma.user.findUnique({ where: { id: data.user.id } });
 
-  redirect(user?.role === "LAVAJATO" ? "/painel" : "/");
+  if (!user?.telefoneConfirmado) {
+    redirect("/confirmar-telefone");
+  }
+
+  redirect(user?.role === "LAVAJATO" ? "/painel/cadastro" : "/");
 }

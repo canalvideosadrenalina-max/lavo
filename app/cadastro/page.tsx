@@ -19,6 +19,7 @@ export default async function CadastroPage({
         <WaveDivider className="-mx-1" />
         {error && <p className="lavo-alert-error">{error}</p>}
         <input name="nome" placeholder="Nome" required className="lavo-input" />
+        <input name="telefone" type="tel" placeholder="WhatsApp (DDD + número)" required className="lavo-input" />
         <input name="email" type="email" placeholder="Email" required className="lavo-input" />
         <input
           name="password"
