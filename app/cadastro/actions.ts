@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { normalizarTelefone, telefoneValido } from "@/lib/otp";
 import { criarEnviarOtp } from "@/lib/otp-service";
 import { limparDocumento, validarDocumento } from "@/lib/lavajato-form";
+import { verificarTokenTurnstile } from "@/lib/turnstile/verificar-token";
 
 function mensagemErroCadastro(message: string): string {
   if (message.includes("rate limit")) {
@@ -33,6 +34,12 @@ export async function signup(formData: FormData) {
   const slug = (formData.get("slug") as string | null)?.trim() || null;
   const cnpjRaw = formData.get("cnpj") as string | null;
   const assumirLavajato = !!slug;
+
+  const turnstileToken = (formData.get("turnstile_token") as string | null)?.trim() ?? "";
+  const turnstile = await verificarTokenTurnstile(turnstileToken);
+  if (!turnstile.ok) {
+    redirectCadastroErro(turnstile.error, slug, (formData.get("role") as string | null) ?? null);
+  }
 
   if (!telefoneValido(telefone)) {
     redirectCadastroErro("Informe um telefone válido com DDD.", slug, "lavajato");
