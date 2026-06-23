@@ -9,7 +9,11 @@ const { createClient } = require("@supabase/supabase-js");
 config({ path: path.join(__dirname, "..", ".env.local") });
 
 const PROSPECTS_FILE = path.join(__dirname, "prospects-validados.json");
-const PROSPECT_PASSWORD = "LaVoSistema2025!";
+const PROSPECT_PASSWORD = process.env.PROSPECT_SYSTEM_PASSWORD;
+
+if (!PROSPECT_PASSWORD) {
+  throw new Error("PROSPECT_SYSTEM_PASSWORD não definido em .env.local");
+}
 
 function slugify(text) {
   return text

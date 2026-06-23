@@ -6,7 +6,12 @@ import fs from 'fs';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: join(__dirname, '../.env.local') });
 
-const API_KEY = 'AIzaSyCrIDo70p3IMqb0SXALhGE3fuxM7cJopNs';
+const API_KEY = process.env.GOOGLE_MAPS_API_KEY;
+
+if (!API_KEY) {
+  console.error('GOOGLE_MAPS_API_KEY não definido em .env.local');
+  process.exit(1);
+}
 
 const lavajatos = [
   { nome: "TF Estética Automotiva", cidade: "Guaíba" },

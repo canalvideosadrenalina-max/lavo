@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lavo
 
-## Getting Started
+PWA de agendamento de lava-jatos — Next.js, Supabase, Prisma, Tailwind.
 
-First, run the development server:
+**Produção:** https://lavo.vercel.app
+
+## Desenvolvimento
 
 ```bash
+npm install
+cp .env.example .env.local   # preencha as variáveis
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Variáveis de ambiente
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Copie `.env.example` para `.env.local` e configure:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variável | Obrigatória | Uso |
+|----------|-------------|-----|
+| `DATABASE_URL` | Sim | Conexão Prisma (pooler) |
+| `DIRECT_URL` | Sim | Migrations / scripts |
+| `NEXT_PUBLIC_SUPABASE_URL` | Sim | Auth e API Supabase |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Sim | Client Supabase |
+| `SUPABASE_SERVICE_ROLE_KEY` | Scripts | Admin API (insert prospects) |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Prod | Widget captcha |
+| `TURNSTILE_SECRET_KEY` | Prod | Validação server-side |
+| `EVOLUTION_API_URL` | OTP | WhatsApp Evolution API |
+| `EVOLUTION_API_KEY` | OTP | WhatsApp Evolution API |
+| `EVOLUTION_INSTANCE` | OTP | Instância Evolution |
+| `GOOGLE_MAPS_API_KEY` | Scripts | `scripts/validate-prospects.js` |
+| `PROSPECT_SYSTEM_PASSWORD` | Scripts | `scripts/insert-prospects.js` |
 
-## Learn More
+Na Vercel, configure as variáveis em **Project → Settings → Environment Variables**.
 
-To learn more about Next.js, take a look at the following resources:
+## Build e deploy
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run build
+npx vercel --prod --yes
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Progresso
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Veja `PROGRESS.md` para fases de deploy e roadmap.
