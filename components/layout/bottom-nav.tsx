@@ -41,6 +41,7 @@ export function BottomNav({ perfilHref = "/login", homeHref = "/" }: Props) {
   const isReservas = pathname === "/reservas";
   const isPerfil =
     pathname === perfilHref ||
+    pathname === "/perfil" ||
     pathname === "/login" ||
     pathname === "/cadastro" ||
     pathname.startsWith("/painel");

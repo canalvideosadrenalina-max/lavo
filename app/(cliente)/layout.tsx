@@ -19,7 +19,7 @@ export default async function ClienteLayout({
     if (dbUser?.role === "LAVAJATO") {
       perfilHref = "/painel";
     } else {
-      perfilHref = "/reservas";
+      perfilHref = "/perfil";
     }
   }
 
