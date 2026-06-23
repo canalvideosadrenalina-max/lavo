@@ -74,6 +74,7 @@ model LavaJato {
   intervaloSlotMin Int                      @default(30) @map("intervalo_slot_min")
   vagasSimultaneas Int                      @default(1) @map("vagas_simultaneas")
   disponivelAgora  Boolean                  @default(true) @map("disponivel_agora")
+  avaliacaoGoogle  Float?                   @map("avaliacao_google")
   createdAt        DateTime                 @default(now()) @map("created_at")
   updatedAt        DateTime                 @updatedAt @map("updated_at")
   servicos         Servico[]

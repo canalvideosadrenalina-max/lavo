@@ -24,6 +24,7 @@ export default async function DemoPage({
         cidade: true,
         estado: true,
         slug: true,
+        avaliacaoGoogle: true,
       },
     }),
     prisma.lavaJato.findMany({

@@ -23,6 +23,7 @@ export default async function ClienteHome({
         cidade: true,
         estado: true,
         slug: true,
+        avaliacaoGoogle: true,
       },
     }),
     prisma.lavaJato.findMany({

@@ -181,6 +181,7 @@ async function main() {
           intervaloSlotMin: 30,
           vagasSimultaneas: 2,
           disponivelAgora: false,
+          avaliacaoGoogle: prospect.rating ? parseFloat(prospect.rating) : null,
         },
       });
 

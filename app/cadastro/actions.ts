@@ -61,6 +61,9 @@ export async function signup(formData: FormData) {
     }
   }
 
+  const cnpjClaim =
+    assumirLavajato && cnpjRaw ? limparDocumento(cnpjRaw) : null;
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -96,10 +99,16 @@ export async function signup(formData: FormData) {
     update: { telefone, telefoneConfirmado: false, nome },
   });
 
-  if (assumirLavajato && slug) {
+  if (assumirLavajato && slug && cnpjClaim) {
     await prisma.lavaJato.update({
       where: { slug },
-      data: { ownerId: data.user.id },
+      data: {
+        ownerId: data.user.id,
+        status: "ATIVO",
+        disponivelAgora: true,
+        tipoDocumento: "CNPJ",
+        documento: cnpjClaim,
+      },
     });
   }
 
