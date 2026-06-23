@@ -21,7 +21,9 @@ export default async function CadastroLavaJatoPage({
     redirect("/painel");
   }
 
-  const tipos = await prisma.tipoServico.findMany({ orderBy: { ordem: "asc" } });
+  const tipos = await prisma.tipoServico.findMany({
+    orderBy: [{ categoria: "asc" }, { ordem: "asc" }],
+  });
   const { error } = await searchParams;
 
   return (

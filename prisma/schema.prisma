@@ -102,6 +102,7 @@ model TipoServico {
   id        String    @id @default(cuid())
   slug      String    @unique
   nome      String
+  categoria String
   descricao String?
   ordem     Int       @default(0)
   servicos  Servico[]

@@ -1,14 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f7fafa;
-  --foreground: #0b2027;
-  --primary: #0e5c68;
-  --accent: #00c2d1;
+  --background: #f0f4f8;
+  --foreground: #0f172a;
+  --primary: #0e7490;
+  --accent: #06b6d4;
   --sun: #ffc93c;
   --surface: #ffffff;
-  --border: rgb(14 92 104 / 0.12);
-  --muted: rgb(11 32 39 / 0.62);
+  --border: rgb(100 116 139 / 0.2);
+  --muted: #64748b;
+  --nav: #1e3a5f;
 }
 
 @theme inline {
@@ -20,6 +21,7 @@
   --color-surface: var(--surface);
   --color-border: var(--border);
   --color-muted: var(--muted);
+  --color-nav: var(--nav);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
 }
@@ -44,15 +46,15 @@ h4 {
   }
 
   .lavo-card {
-    @apply rounded-xl border border-border bg-surface p-4 shadow-sm;
+    @apply rounded-2xl border border-border bg-surface p-4 shadow-md;
   }
 
   .lavo-section {
-    @apply space-y-4 rounded-xl border border-border bg-surface p-4 md:p-5;
+    @apply space-y-4 rounded-2xl border border-border bg-surface p-4 shadow-md md:p-5;
   }
 
   .lavo-input {
-    @apply w-full rounded-lg border border-border bg-surface px-3 py-2 text-foreground placeholder:text-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25;
+    @apply w-full rounded-xl border border-border bg-surface px-3 py-2.5 text-foreground placeholder:text-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25;
   }
 
   .lavo-label {
@@ -64,46 +66,46 @@ h4 {
   }
 
   .lavo-link {
-    @apply text-primary underline-offset-2 transition hover:text-accent hover:underline;
+    @apply text-[#0E7490] underline-offset-2 transition hover:text-accent hover:underline;
   }
 
   .lavo-btn {
-    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .lavo-btn-primary {
-    @apply inline-flex w-full items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex w-full items-center justify-center rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .lavo-btn-accent {
-    @apply inline-flex items-center justify-center rounded-lg bg-accent px-4 py-2 text-sm font-medium text-foreground transition hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .lavo-btn-outline {
-    @apply inline-flex items-center justify-center rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium text-foreground transition hover:border-primary/40 hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-xl border border-border bg-surface px-4 py-2 text-sm font-medium text-foreground transition hover:border-accent/40 hover:bg-accent/5 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .lavo-btn-danger {
-    @apply inline-flex items-center justify-center rounded-lg border border-red-300/80 bg-surface px-4 py-2 text-sm font-medium text-red-700 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-xl border border-red-300/80 bg-surface px-4 py-2 text-sm font-medium text-red-700 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .lavo-btn-success {
-    @apply inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .lavo-btn-slot {
-    @apply inline-flex items-center justify-center rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium transition hover:border-accent hover:bg-accent/10 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-xl border border-border bg-surface px-4 py-2 text-sm font-medium transition hover:border-accent hover:bg-accent/10 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .lavo-alert-error {
-    @apply text-sm text-red-700;
+    @apply text-sm text-red-600;
   }
 
   .lavo-alert-success {
-    @apply rounded-lg border border-sun/40 bg-sun/15 px-3 py-2 text-sm text-foreground;
+    @apply rounded-xl border border-accent/30 bg-accent/10 px-3 py-2 text-sm text-foreground;
   }
 
   .lavo-badge {
-    @apply inline-flex rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary;
+    @apply inline-flex rounded-full bg-accent/15 px-2.5 py-0.5 text-xs font-semibold text-[#0E7490];
   }
 }

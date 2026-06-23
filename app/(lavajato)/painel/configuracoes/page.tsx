@@ -28,7 +28,9 @@ export default async function ConfiguracoesPage({
 
   if (!lavaJato) redirect("/painel/cadastro");
 
-  const tipos = await prisma.tipoServico.findMany({ orderBy: { ordem: "asc" } });
+  const tipos = await prisma.tipoServico.findMany({
+    orderBy: [{ categoria: "asc" }, { ordem: "asc" }],
+  });
   const { error, ok } = await searchParams;
 
   return (

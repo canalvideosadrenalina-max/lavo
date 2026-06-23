@@ -5,12 +5,20 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { normalizarTelefone, telefoneValido } from "@/lib/otp";
 import { criarEnviarOtp } from "@/lib/otp-service";
+import { limparDocumento, validarDocumento } from "@/lib/lavajato-form";
 
 function mensagemErroCadastro(message: string): string {
   if (message.includes("rate limit")) {
     return "Limite de e-mails atingido. Aguarde alguns minutos ou desative a confirmação por e-mail no Supabase (Authentication → Email).";
   }
   return message;
+}
+
+function redirectCadastroErro(mensagem: string, slug?: string | null, role?: string | null): never {
+  const params = new URLSearchParams({ error: mensagem });
+  if (slug?.trim()) params.set("slug", slug.trim());
+  if (role?.trim()) params.set("role", role.trim());
+  redirect(`/cadastro?${params.toString()}`);
 }
 
 export async function signup(formData: FormData) {
@@ -22,9 +30,28 @@ export async function signup(formData: FormData) {
   const role = formData.get("role") as string;
   const telefoneRaw = formData.get("telefone") as string;
   const telefone = normalizarTelefone(telefoneRaw);
+  const slug = (formData.get("slug") as string | null)?.trim() || null;
+  const cnpjRaw = formData.get("cnpj") as string | null;
+  const assumirLavajato = !!slug;
 
   if (!telefoneValido(telefone)) {
-    redirect(`/cadastro?error=${encodeURIComponent("Informe um telefone válido com DDD.")}`);
+    redirectCadastroErro("Informe um telefone válido com DDD.", slug, "lavajato");
+  }
+
+  if (assumirLavajato) {
+    if (role !== "LAVAJATO") {
+      redirectCadastroErro("Selecione o perfil de dono de lava-jato.", slug, "lavajato");
+    }
+
+    const cnpj = limparDocumento(cnpjRaw ?? "");
+    if (!validarDocumento("CNPJ", cnpj)) {
+      redirectCadastroErro("Informe um CNPJ válido.", slug, "lavajato");
+    }
+
+    const lavaJato = await prisma.lavaJato.findFirst({ where: { slug } });
+    if (!lavaJato) {
+      redirectCadastroErro("Lava-jato não encontrado.", slug, "lavajato");
+    }
   }
 
   const { data, error } = await supabase.auth.signUp({
@@ -34,11 +61,19 @@ export async function signup(formData: FormData) {
   });
 
   if (error) {
-    redirect(`/cadastro?error=${encodeURIComponent(mensagemErroCadastro(error.message))}`);
+    redirectCadastroErro(
+      mensagemErroCadastro(error.message),
+      slug,
+      assumirLavajato ? "lavajato" : null
+    );
   }
 
   if (!data.user) {
-    redirect(`/cadastro?error=${encodeURIComponent("Não foi possível criar a conta.")}`);
+    redirectCadastroErro(
+      "Não foi possível criar a conta.",
+      slug,
+      assumirLavajato ? "lavajato" : null
+    );
   }
 
   await prisma.user.upsert({
@@ -54,9 +89,16 @@ export async function signup(formData: FormData) {
     update: { telefone, telefoneConfirmado: false, nome },
   });
 
+  if (assumirLavajato && slug) {
+    await prisma.lavaJato.update({
+      where: { slug },
+      data: { ownerId: data.user.id },
+    });
+  }
+
   const otp = await criarEnviarOtp(telefone);
   if (!otp.ok) {
-    redirect(`/cadastro?error=${encodeURIComponent(otp.error)}`);
+    redirectCadastroErro(otp.error, slug, assumirLavajato ? "lavajato" : null);
   }
 
   if (!data.session) {
@@ -65,5 +107,5 @@ export async function signup(formData: FormData) {
     );
   }
 
-  redirect("/confirmar-telefone");
+  redirect("/");
 }

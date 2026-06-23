@@ -24,6 +24,10 @@ export async function confirmarTelefone(formData: FormData) {
   }
 
   if (dbUser.telefoneConfirmado) {
+    const returnUrl = (formData.get("returnUrl") as string | null)?.trim();
+    if (returnUrl?.startsWith("/") && !returnUrl.startsWith("//")) {
+      redirect(returnUrl);
+    }
     redirectPosConfirmacaoTelefone(dbUser.role);
   }
 
@@ -36,6 +40,11 @@ export async function confirmarTelefone(formData: FormData) {
     where: { id: user.id },
     data: { telefoneConfirmado: true },
   });
+
+  const returnUrl = (formData.get("returnUrl") as string | null)?.trim();
+  if (returnUrl?.startsWith("/") && !returnUrl.startsWith("//")) {
+    redirect(returnUrl);
+  }
 
   redirectPosConfirmacaoTelefone(dbUser.role);
 }

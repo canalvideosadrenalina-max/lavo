@@ -1,0 +1,254 @@
+[
+  {
+    "nome": "TF Estética Automotiva",
+    "cidade": "Guaíba",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Lavagem Von Muhlen",
+    "cidade": "Guaíba",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Belm Go Eco Wash Customização",
+    "cidade": "Guaíba",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Limpocar Lava a Seco",
+    "cidade": "Guaíba",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Lavagem Original Car",
+    "cidade": "Guaíba",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Belo's Lavagem",
+    "cidade": "Guaíba",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Lavagem 2 Irmãos",
+    "cidade": "Guaíba",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Less Lavagem Ecológica",
+    "cidade": "Guaíba",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Roger Pereira Ramos",
+    "cidade": "Guaíba",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Auto Center Guaíba",
+    "cidade": "Guaíba",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Maia Polimento",
+    "cidade": "Guaíba",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Vini Estética Automotiva",
+    "cidade": "Guaíba",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Lavagem da Magdinha",
+    "cidade": "Guaíba",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Lavagem do Toni",
+    "cidade": "Guaíba",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Lavagem Guaíba",
+    "cidade": "Guaíba",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Posto Arrastão",
+    "cidade": "Guaíba",
+    "status": "INATIVO",
+    "rating": null,
+    "endereco": ""
+  },
+  {
+    "nome": "Abastecedora Rioxel",
+    "cidade": "Guaíba",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Lavagem do Cheiroso",
+    "cidade": "Guaíba",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Lava Rápido Americano",
+    "cidade": "Canoas",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Jatos Car",
+    "cidade": "Canoas",
+    "status": "INATIVO",
+    "rating": null,
+    "endereco": ""
+  },
+  {
+    "nome": "JC Lavagem",
+    "cidade": "Canoas",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "DouglasDetail Estética Automotiva",
+    "cidade": "Canoas",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Fox Wash Lavagem",
+    "cidade": "Canoas",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Lavagem São João",
+    "cidade": "Canoas",
+    "status": "INATIVO",
+    "rating": null,
+    "endereco": ""
+  },
+  {
+    "nome": "Parcão Estética Automotiva",
+    "cidade": "Canoas",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Lavagem Porto Belo",
+    "cidade": "Canoas",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Estéticar Lavagem Automotiva",
+    "cidade": "Canoas",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Lava-Rápido Gaspar Lemos",
+    "cidade": "Canoas",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Lava-Rápido Rua dos Buritis",
+    "cidade": "Canoas",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Lava-Rápido Rua Caramuru",
+    "cidade": "Canoas",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Lava-Rápido Rua Camaquã",
+    "cidade": "Canoas",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Lava-Rápido Capistrano de Abreu",
+    "cidade": "Canoas",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Lava-Rápido Rua Tupanciretã",
+    "cidade": "Canoas",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Lava-Rápido Santini Longoni",
+    "cidade": "Canoas",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Lava-Rápido Guajuviras",
+    "cidade": "Canoas",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  },
+  {
+    "nome": "Lava-Rápido Av. Ozanan",
+    "cidade": "Canoas",
+    "status": "ATIVO",
+    "rating": "5.0",
+    "endereco": ""
+  }
+]

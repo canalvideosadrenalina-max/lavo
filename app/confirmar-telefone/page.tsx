@@ -13,7 +13,7 @@ function mascararTelefone(telefone: string) {
 export default async function ConfirmarTelefonePage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; ok?: string }>;
+  searchParams: Promise<{ error?: string; ok?: string; returnUrl?: string }>;
 }) {
   const supabase = await createClient();
   const {
@@ -24,6 +24,10 @@ export default async function ConfirmarTelefonePage({
     redirect("/login");
   }
 
+  const { error, ok, returnUrl } = await searchParams;
+  const returnUrlSeguro =
+    returnUrl?.startsWith("/") && !returnUrl.startsWith("//") ? returnUrl : null;
+
   const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
 
   if (!dbUser) {
@@ -31,10 +35,8 @@ export default async function ConfirmarTelefonePage({
   }
 
   if (dbUser.telefoneConfirmado) {
-    redirect(dbUser.role === "LAVAJATO" ? "/painel/cadastro" : "/");
+    redirect(returnUrlSeguro ?? (dbUser.role === "LAVAJATO" ? "/painel/cadastro" : "/"));
   }
-
-  const { error, ok } = await searchParams;
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
@@ -50,6 +52,9 @@ export default async function ConfirmarTelefonePage({
         {error && <p className="lavo-alert-error">{error}</p>}
         {ok && <p className="lavo-alert-success">{ok}</p>}
         <form action={confirmarTelefone} className="space-y-4">
+          {returnUrlSeguro && (
+            <input type="hidden" name="returnUrl" value={returnUrlSeguro} />
+          )}
           <label className="lavo-label">
             Código de verificação
             <input

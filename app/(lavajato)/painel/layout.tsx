@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { Header } from "@/components/layout/header";
-import { redirectSeTelefoneNaoConfirmado } from "@/lib/auth/telefone";
 
 export default async function PainelLayout({
   children,
@@ -17,8 +16,6 @@ export default async function PainelLayout({
   if (!user) {
     redirect("/login");
   }
-
-  await redirectSeTelefoneNaoConfirmado(user.id);
 
   const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
 

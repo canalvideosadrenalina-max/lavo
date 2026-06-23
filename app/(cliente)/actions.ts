@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { horarioDisponivelParaAgendamento, obterHorariosDisponiveis } from "@/lib/slots";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function buscarHorariosDisponiveis(
   lavaJatoId: string,
@@ -46,6 +47,22 @@ export async function criarAgendamento(
 
   if (!user) {
     return { success: false, error: "Faça login para agendar" };
+  }
+
+  const dbUser = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { telefoneConfirmado: true },
+  });
+
+  if (dbUser && !dbUser.telefoneConfirmado) {
+    const lavaJato = await prisma.lavaJato.findUnique({
+      where: { id: lavaJatoId },
+      select: { slug: true },
+    });
+    const returnUrl = lavaJato ? `/lavajato/${lavaJato.slug}` : "/";
+    redirect(
+      `/confirmar-telefone?returnUrl=${encodeURIComponent(returnUrl)}`
+    );
   }
 
   if (!lavaJatoId || !dataHoraISO || servicoIds.length === 0) {

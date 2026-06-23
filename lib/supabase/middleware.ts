@@ -40,7 +40,7 @@ export async function updateSession(request: NextRequest) {
 
   if (isAuthPage && user && pathname !== "/confirmar-telefone") {
     const url = request.nextUrl.clone();
-    url.pathname = role === "LAVAJATO" ? "/painel" : "/";
+    url.pathname = "/";
     return NextResponse.redirect(url);
   }
 

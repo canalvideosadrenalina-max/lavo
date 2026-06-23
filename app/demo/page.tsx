@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { HomeScreen } from "@/components/cliente/home-screen";
+import { BottomNav } from "@/components/layout/bottom-nav";
 
-export default async function ClienteHome({
+export default async function DemoPage({
   searchParams,
 }: {
   searchParams: Promise<{ cidade?: string }>;
@@ -36,11 +37,19 @@ export default async function ClienteHome({
   const cidades = cidadesRows.map((r) => r.cidade);
 
   return (
-    <HomeScreen
-      lavaJatos={lavaJatos}
-      cidades={cidades}
-      filtroCidade={filtroCidade}
-      basePath="/"
-    />
+    <div
+      className="flex min-h-dvh flex-1 flex-col bg-[#F0F4F8]"
+      style={{ paddingBottom: "calc(4.5rem + env(safe-area-inset-bottom, 0px))" }}
+    >
+      <main className="flex flex-1 flex-col">
+        <HomeScreen
+          lavaJatos={lavaJatos}
+          cidades={cidades}
+          filtroCidade={filtroCidade}
+          basePath="/demo"
+        />
+      </main>
+      <BottomNav perfilHref="/login" homeHref="/demo" />
+    </div>
   );
 }
