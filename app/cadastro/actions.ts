@@ -114,5 +114,5 @@ export async function signup(formData: FormData) {
     );
   }
 
-  redirect("/");
+  redirect("/confirmar-telefone");
 }

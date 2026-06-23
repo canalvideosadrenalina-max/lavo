@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { AuthField, PasswordField } from "@/components/auth/auth-field";
 import { IconSpinner } from "@/components/auth/auth-icons";
@@ -78,14 +78,9 @@ export function CadastroForm({ serverError, assumirPerfil, lavaJatoNome, slugPar
   const [cnpj, setCnpj] = useState("");
   const [role, setRole] = useState(assumirPerfil ? "LAVAJATO" : "CLIENTE");
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-  const [turnstileReset, setTurnstileReset] = useState(0);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   const markTouched = (field: string) => setTouched((t) => ({ ...t, [field]: true }));
-
-  useEffect(() => {
-    if (serverError) setTurnstileReset((n) => n + 1);
-  }, [serverError]);
 
   const forca = forcaSenha(password);
 
@@ -294,7 +289,10 @@ export function CadastroForm({ serverError, assumirPerfil, lavaJatoNome, slugPar
         </select>
       </div>
 
-      <TurnstileWidget onTokenChange={setTurnstileToken} resetSignal={turnstileReset} />
+      <TurnstileWidget
+        key={serverError ?? "initial"}
+        onTokenChange={setTurnstileToken}
+      />
 
       <SubmitButton disabled={!canSubmit} />
 
