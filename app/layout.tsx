@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import { RegisterServiceWorker } from "@/components/pwa/register-sw";
+import { SonnerToaster } from "@/components/ui/sonner-toaster";
 import "./globals.css";
 
 const inter = Inter({
@@ -48,6 +49,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-background font-sans text-foreground">
         <RegisterServiceWorker />
+        <SonnerToaster />
         {children}
       </body>
     </html>

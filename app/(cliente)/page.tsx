@@ -1,5 +1,6 @@
-import { prisma } from "@/lib/prisma";
-import { HomeScreen } from "@/components/cliente/home-screen";
+import { Suspense } from "react";
+import { HomePageContent } from "@/components/cliente/home-page-content";
+import { HomePageLoading } from "@/components/cliente/home-page-loading";
 
 export default async function ClienteHome({
   searchParams,
@@ -9,39 +10,9 @@ export default async function ClienteHome({
   const { cidade } = await searchParams;
   const filtroCidade = cidade?.trim();
 
-  const [lavaJatos, cidadesRows] = await Promise.all([
-    prisma.lavaJato.findMany({
-      where: {
-        disponivelAgora: true,
-        ...(filtroCidade
-          ? { cidade: { contains: filtroCidade, mode: "insensitive" } }
-          : {}),
-      },
-      orderBy: { nome: "asc" },
-      select: {
-        nome: true,
-        cidade: true,
-        estado: true,
-        slug: true,
-        avaliacaoGoogle: true,
-      },
-    }),
-    prisma.lavaJato.findMany({
-      where: { disponivelAgora: true },
-      select: { cidade: true },
-      distinct: ["cidade"],
-      orderBy: { cidade: "asc" },
-    }),
-  ]);
-
-  const cidades = cidadesRows.map((r) => r.cidade);
-
   return (
-    <HomeScreen
-      lavaJatos={lavaJatos}
-      cidades={cidades}
-      filtroCidade={filtroCidade}
-      basePath="/"
-    />
+    <Suspense fallback={<HomePageLoading />}>
+      <HomePageContent filtroCidade={filtroCidade} />
+    </Suspense>
   );
 }

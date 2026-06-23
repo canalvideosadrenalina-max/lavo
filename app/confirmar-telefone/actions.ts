@@ -5,8 +5,12 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { criarEnviarOtp, validarOtp } from "@/lib/otp-service";
 import { redirectPosConfirmacaoTelefone } from "@/lib/auth/telefone";
+import type { ActionResult } from "@/lib/action-result";
 
-export async function confirmarTelefone(formData: FormData) {
+export async function confirmarTelefone(
+  _prev: ActionResult | null,
+  formData: FormData
+): Promise<ActionResult> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -20,7 +24,7 @@ export async function confirmarTelefone(formData: FormData) {
   const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
 
   if (!dbUser?.telefone) {
-    redirect("/confirmar-telefone?error=Telefone não cadastrado.");
+    return { error: "Telefone não cadastrado." };
   }
 
   if (dbUser.telefoneConfirmado) {
@@ -29,11 +33,12 @@ export async function confirmarTelefone(formData: FormData) {
       redirect(returnUrl);
     }
     redirectPosConfirmacaoTelefone(dbUser.role);
+    return {};
   }
 
   const result = await validarOtp(dbUser.telefone, codigo);
   if (!result.ok) {
-    redirect(`/confirmar-telefone?error=${encodeURIComponent(result.error)}`);
+    return { error: result.error };
   }
 
   await prisma.user.update({
@@ -47,9 +52,13 @@ export async function confirmarTelefone(formData: FormData) {
   }
 
   redirectPosConfirmacaoTelefone(dbUser.role);
+  return {};
 }
 
-export async function reenviarCodigoTelefone() {
+export async function reenviarCodigoTelefone(
+  _prev: ActionResult | null,
+  _formData: FormData
+): Promise<ActionResult> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -62,17 +71,18 @@ export async function reenviarCodigoTelefone() {
   const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
 
   if (!dbUser?.telefone) {
-    redirect("/confirmar-telefone?error=Telefone não cadastrado.");
+    return { error: "Telefone não cadastrado." };
   }
 
   if (dbUser.telefoneConfirmado) {
     redirectPosConfirmacaoTelefone(dbUser.role);
+    return {};
   }
 
   const otp = await criarEnviarOtp(dbUser.telefone);
   if (!otp.ok) {
-    redirect(`/confirmar-telefone?error=${encodeURIComponent(otp.error)}`);
+    return { error: otp.error };
   }
 
-  redirect("/confirmar-telefone?ok=Código reenviado no WhatsApp.");
+  return { success: "Código reenviado no WhatsApp." };
 }

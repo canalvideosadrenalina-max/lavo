@@ -23,7 +23,7 @@ export default async function PerfilPage() {
   const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
 
   if (!dbUser) {
-    redirect("/login?error=Usuário não encontrado.");
+    redirect("/login");
   }
 
   if (dbUser.role === "LAVAJATO") {

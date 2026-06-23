@@ -12,12 +12,12 @@ import {
 } from "@/lib/lavajato-form";
 import { redirect } from "next/navigation";
 import type { TipoDocumento } from "@prisma/client";
+import type { ActionResult } from "@/lib/action-result";
 
-function redirectComErro(mensagem: string): never {
-  redirect("/painel/configuracoes?error=" + encodeURIComponent(mensagem));
-}
-
-export async function atualizarLavaJato(formData: FormData) {
+export async function atualizarLavaJato(
+  _prev: ActionResult | null,
+  formData: FormData
+): Promise<ActionResult> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -40,13 +40,13 @@ export async function atualizarLavaJato(formData: FormData) {
   const vagasSimultaneas = parseInt(formData.get("vagasSimultaneas") as string, 10);
 
   if (!validarDocumento(tipoDocumento, documento)) {
-    redirectComErro(tipoDocumento === "CNPJ" ? "CNPJ inválido" : "CPF inválido");
+    return { error: tipoDocumento === "CNPJ" ? "CNPJ inválido" : "CPF inválido" };
   }
 
   const docEmUso = await prisma.lavaJato.findFirst({
     where: { documento, id: { not: lavaJato.id } },
   });
-  if (docEmUso) redirectComErro("Documento já cadastrado");
+  if (docEmUso) return { error: "Documento já cadastrado" };
 
   let disponibilidades: DisponibilidadeInput[];
   let servicos: Awaited<ReturnType<typeof parseServicos>>;
@@ -55,7 +55,7 @@ export async function atualizarLavaJato(formData: FormData) {
     disponibilidades = parseDisponibilidades(formData);
     servicos = parseServicos(formData);
   } catch (e) {
-    redirectComErro(e instanceof Error ? e.message : "Dados inválidos");
+    return { error: e instanceof Error ? e.message : "Dados inválidos" };
   }
 
   const { horaAbertura, horaFechamento } = resumoHorario(disponibilidades);
@@ -85,5 +85,5 @@ export async function atualizarLavaJato(formData: FormData) {
     });
   });
 
-  redirect("/painel/configuracoes?ok=1");
+  return { success: "Configurações salvas." };
 }

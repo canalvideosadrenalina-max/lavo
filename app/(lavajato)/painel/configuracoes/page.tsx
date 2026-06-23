@@ -5,12 +5,9 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { DisponibilidadeSemanalForm } from "@/components/painel/disponibilidade-semanal-form";
 import { ServicosForm } from "@/components/painel/servicos-form";
+import { FormWithToast } from "@/components/ui/form-with-toast";
 
-export default async function ConfiguracoesPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string; ok?: string }>;
-}) {
+export default async function ConfiguracoesPage() {
   const supabase = await createClient();
   const {
     data: { user },
@@ -31,7 +28,6 @@ export default async function ConfiguracoesPage({
   const tipos = await prisma.tipoServico.findMany({
     orderBy: [{ categoria: "asc" }, { ordem: "asc" }],
   });
-  const { error, ok } = await searchParams;
 
   return (
     <main className="lavo-container max-w-2xl">
@@ -46,10 +42,7 @@ export default async function ConfiguracoesPage({
         </Link>
       </div>
 
-      {error && <p className="lavo-alert-error">{error}</p>}
-      {ok && <p className="lavo-alert-success">Configurações salvas.</p>}
-
-      <form action={atualizarLavaJato} className="space-y-8">
+      <FormWithToast action={atualizarLavaJato} className="space-y-8">
         <section className="lavo-section">
           <h2 className="font-semibold">Identificação</h2>
           <select
@@ -143,7 +136,7 @@ export default async function ConfiguracoesPage({
         <button type="submit" className="lavo-btn-primary">
           Salvar alterações
         </button>
-      </form>
+      </FormWithToast>
     </main>
   );
 }

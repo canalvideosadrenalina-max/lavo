@@ -1,17 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useActionState, useMemo, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { AuthField, PasswordField } from "@/components/auth/auth-field";
 import { IconSpinner } from "@/components/auth/auth-icons";
 import { TurnstileWidget } from "@/components/turnstile/TurnstileWidget";
+import { useActionToast } from "@/components/hooks/use-action-toast";
 import { telefoneValido } from "@/lib/otp";
 import { signup } from "./actions";
 import { WaveDivider } from "@/components/ui/wave-divider";
 
 type CadastroFormProps = {
-  serverError?: string;
   assumirPerfil: boolean;
   lavaJatoNome?: string;
   slugParam: string;
@@ -68,7 +68,10 @@ function SubmitButton({ disabled }: { disabled: boolean }) {
   );
 }
 
-export function CadastroForm({ serverError, assumirPerfil, lavaJatoNome, slugParam }: CadastroFormProps) {
+export function CadastroForm({ assumirPerfil, lavaJatoNome, slugParam }: CadastroFormProps) {
+  const [state, formAction] = useActionState(signup, null);
+  useActionToast(state);
+
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
@@ -126,7 +129,7 @@ export function CadastroForm({ serverError, assumirPerfil, lavaJatoNome, slugPar
     forca === "forte" ? "w-full bg-emerald-500" : forca === "media" ? "w-2/3 bg-amber-500" : "w-1/3 bg-red-500";
 
   return (
-    <form action={signup} className="lavo-section w-full space-y-4">
+    <form action={formAction} className="lavo-section w-full space-y-4">
       <div>
         <h1 className="text-2xl font-bold text-[#0F172A]">Criar conta</h1>
         <p className="mt-1 lavo-muted">Cliente ou dono de lava-jato</p>
@@ -142,8 +145,6 @@ export function CadastroForm({ serverError, assumirPerfil, lavaJatoNome, slugPar
           </p>
         </div>
       )}
-
-      {serverError && <p className="lavo-alert-error">{serverError}</p>}
 
       {assumirPerfil && <input type="hidden" name="slug" value={slugParam} />}
       <input type="hidden" name="turnstile_token" value={turnstileToken ?? ""} />
@@ -290,7 +291,7 @@ export function CadastroForm({ serverError, assumirPerfil, lavaJatoNome, slugPar
       </div>
 
       <TurnstileWidget
-        key={serverError ?? "initial"}
+        key={state?.error ?? "initial"}
         onTokenChange={setTurnstileToken}
       />
 

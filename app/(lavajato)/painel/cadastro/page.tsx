@@ -4,12 +4,9 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { DisponibilidadeSemanalForm } from "@/components/painel/disponibilidade-semanal-form";
 import { ServicosForm } from "@/components/painel/servicos-form";
+import { FormWithToast } from "@/components/ui/form-with-toast";
 
-export default async function CadastroLavaJatoPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>;
-}) {
+export default async function CadastroLavaJatoPage() {
   const supabase = await createClient();
   const {
     data: { user },
@@ -24,7 +21,6 @@ export default async function CadastroLavaJatoPage({
   const tipos = await prisma.tipoServico.findMany({
     orderBy: [{ categoria: "asc" }, { ordem: "asc" }],
   });
-  const { error } = await searchParams;
 
   return (
     <main className="lavo-container max-w-2xl">
@@ -36,9 +32,7 @@ export default async function CadastroLavaJatoPage({
         </p>
       </div>
 
-      {error && <p className="lavo-alert-error">{error}</p>}
-
-      <form action={cadastrarLavaJato} className="space-y-8">
+      <FormWithToast action={cadastrarLavaJato} className="space-y-8">
         <section className="lavo-section">
           <h2 className="font-semibold">Identificação</h2>
           <select name="tipoDocumento" required className="lavo-input">
@@ -120,7 +114,7 @@ export default async function CadastroLavaJatoPage({
         <button type="submit" className="lavo-btn-primary">
           Salvar cadastro
         </button>
-      </form>
+      </FormWithToast>
     </main>
   );
 }

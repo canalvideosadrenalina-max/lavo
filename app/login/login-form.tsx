@@ -1,17 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useActionState, useMemo, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { AuthField, PasswordField } from "@/components/auth/auth-field";
 import { IconSpinner } from "@/components/auth/auth-icons";
+import { useActionToast } from "@/components/hooks/use-action-toast";
 import { login } from "./actions";
 import { WaveDivider } from "@/components/ui/wave-divider";
-
-type LoginFormProps = {
-  serverError?: string;
-  info?: string;
-};
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -40,20 +36,10 @@ function SubmitButton({ disabled }: { disabled: boolean }) {
   );
 }
 
-function mensagemErroLogin(erro?: string) {
-  if (!erro) return undefined;
-  const lower = erro.toLowerCase();
-  if (
-    lower.includes("invalid login credentials") ||
-    lower.includes("credenciais") ||
-    lower.includes("email ou senha")
-  ) {
-    return "Email ou senha incorretos. Verifique e tente novamente.";
-  }
-  return erro;
-}
+export function LoginForm() {
+  const [state, formAction] = useActionState(login, null);
+  useActionToast(state);
 
-export function LoginForm({ serverError, info }: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [touched, setTouched] = useState<Record<string, boolean>>({});
@@ -66,25 +52,13 @@ export function LoginForm({ serverError, info }: LoginFormProps) {
     return { emailOk, passwordOk, allOk: emailOk && passwordOk };
   }, [email, password]);
 
-  const erro = mensagemErroLogin(serverError);
-
   return (
-    <form action={login} className="lavo-section w-full space-y-4">
+    <form action={formAction} className="lavo-section w-full space-y-4">
       <div>
         <h1 className="text-2xl font-bold text-[#0F172A]">Entrar</h1>
         <p className="mt-1 lavo-muted">Acesse sua conta Lavo</p>
       </div>
       <WaveDivider className="-mx-1" />
-
-      {erro && (
-        <div className="lavo-alert-error flex items-start gap-2 rounded-xl border border-red-200/80 bg-red-50/80 px-3 py-2.5" role="alert">
-          <span className="mt-0.5 shrink-0 font-bold" aria-hidden>
-            ✕
-          </span>
-          <span>{erro}</span>
-        </div>
-      )}
-      {info && <p className="lavo-alert-success">{info}</p>}
 
       <AuthField
         id="email"

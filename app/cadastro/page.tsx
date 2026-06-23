@@ -4,9 +4,9 @@ import { CadastroForm } from "./cadastro-form";
 export default async function CadastroPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; slug?: string; role?: string }>;
+  searchParams: Promise<{ slug?: string; role?: string }>;
 }) {
-  const { error, slug, role } = await searchParams;
+  const { slug, role } = await searchParams;
   const slugParam = slug?.trim() ?? "";
   const assumirPerfil = role?.toLowerCase() === "lavajato" && !!slugParam;
 
@@ -21,7 +21,6 @@ export default async function CadastroPage({
     <main className="flex min-h-dvh flex-col items-center justify-center bg-[#F0F4F8] p-4">
       <div className="w-full max-w-sm space-y-4">
         <CadastroForm
-          serverError={error}
           assumirPerfil={assumirPerfil}
           lavaJatoNome={lavaJato?.nome}
           slugParam={slugParam}

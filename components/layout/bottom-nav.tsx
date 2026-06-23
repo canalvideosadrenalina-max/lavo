@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { CalendarCheck, Home, Search, User, type LucideIcon } from "lucide-react";
 
 type Props = {
   perfilHref?: string;
@@ -10,12 +11,12 @@ type Props = {
 
 function NavItem({
   href,
-  icon,
+  icon: Icon,
   label,
   active,
 }: {
   href: string;
-  icon: string;
+  icon: LucideIcon;
   label: string;
   active: boolean;
 }) {
@@ -26,9 +27,7 @@ function NavItem({
         active ? "text-[#06B6D4]" : "text-[#64748B]"
       }`}
     >
-      <span className="text-xl leading-none" aria-hidden>
-        {icon}
-      </span>
+      <Icon size={24} aria-hidden />
       <span>{label}</span>
     </Link>
   );
@@ -52,10 +51,10 @@ export function BottomNav({ perfilHref = "/login", homeHref = "/" }: Props) {
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
       <div className="mx-auto flex max-w-lg items-stretch justify-around px-2">
-        <NavItem href={homeHref} icon="🏠" label="Home" active={isHome} />
-        <NavItem href={`${homeHref}#buscar`} icon="🔍" label="Buscar" active={false} />
-        <NavItem href="/reservas" icon="📅" label="Reservas" active={isReservas} />
-        <NavItem href={perfilHref} icon="👤" label="Perfil" active={isPerfil} />
+        <NavItem href={homeHref} icon={Home} label="Home" active={isHome} />
+        <NavItem href={`${homeHref}#buscar`} icon={Search} label="Buscar" active={false} />
+        <NavItem href="/reservas" icon={CalendarCheck} label="Reservas" active={isReservas} />
+        <NavItem href={perfilHref} icon={User} label="Perfil" active={isPerfil} />
       </div>
     </nav>
   );

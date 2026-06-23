@@ -13,12 +13,12 @@ import {
 } from "@/lib/lavajato-form";
 import { redirect } from "next/navigation";
 import type { TipoDocumento } from "@prisma/client";
+import type { ActionResult } from "@/lib/action-result";
 
-function redirectComErro(mensagem: string): never {
-  redirect("/painel/cadastro?error=" + encodeURIComponent(mensagem));
-}
-
-export async function cadastrarLavaJato(formData: FormData) {
+export async function cadastrarLavaJato(
+  _prev: ActionResult | null,
+  formData: FormData
+): Promise<ActionResult> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -42,27 +42,27 @@ export async function cadastrarLavaJato(formData: FormData) {
   const vagasSimultaneas = parseInt(formData.get("vagasSimultaneas") as string, 10);
 
   if (!nome || !endereco || !cidade || !estado) {
-    redirectComErro("Preencha todos os campos do estabelecimento");
+    return { error: "Preencha todos os campos do estabelecimento" };
   }
 
   if (!tipoDocumento || !validarDocumento(tipoDocumento, documento)) {
-    redirectComErro(tipoDocumento === "CNPJ" ? "CNPJ inválido" : "CPF inválido");
+    return { error: tipoDocumento === "CNPJ" ? "CNPJ inválido" : "CPF inválido" };
   }
 
   if (tipoDocumento === "CNPJ" && !razaoSocial) {
-    redirectComErro("Informe a razão social para CNPJ");
+    return { error: "Informe a razão social para CNPJ" };
   }
 
   if (Number.isNaN(intervaloSlotMin) || intervaloSlotMin < 15) {
-    redirectComErro("Intervalo mínimo entre horários: 15 minutos");
+    return { error: "Intervalo mínimo entre horários: 15 minutos" };
   }
 
   if (Number.isNaN(vagasSimultaneas) || vagasSimultaneas < 1) {
-    redirectComErro("Informe pelo menos 1 vaga simultânea");
+    return { error: "Informe pelo menos 1 vaga simultânea" };
   }
 
   const docEmUso = await prisma.lavaJato.findUnique({ where: { documento } });
-  if (docEmUso) redirectComErro("Documento já cadastrado");
+  if (docEmUso) return { error: "Documento já cadastrado" };
 
   let disponibilidades: DisponibilidadeInput[];
   let servicos: Awaited<ReturnType<typeof parseServicos>>;
@@ -71,7 +71,7 @@ export async function cadastrarLavaJato(formData: FormData) {
     disponibilidades = parseDisponibilidades(formData);
     servicos = parseServicos(formData);
   } catch (e) {
-    redirectComErro(e instanceof Error ? e.message : "Dados inválidos");
+    return { error: e instanceof Error ? e.message : "Dados inválidos" };
   }
 
   const { horaAbertura, horaFechamento } = resumoHorario(disponibilidades);
@@ -104,5 +104,8 @@ export async function cadastrarLavaJato(formData: FormData) {
     },
   });
 
-  redirect("/painel");
+  return {
+    success: "Cadastro do lava-jato salvo com sucesso.",
+    redirectTo: "/painel",
+  };
 }

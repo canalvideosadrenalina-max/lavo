@@ -95,6 +95,19 @@
 
 ---
 
+## Fase 8 — UX polish (nav, skeletons, toasts, manifest)
+
+**Status:** concluída ✅  
+**Data:** 2026-06-23
+
+### Escopo
+- [x] Bottom nav com ícones Lucide (`lucide-react`)
+- [x] Skeleton loading na home (`CardSkeleton` + Suspense)
+- [x] Sonner toasts (`showToast`, `FormWithToast`, actions refatoradas)
+- [x] Manifest shortcuts (Buscar, Reservas, Perfil)
+
+---
+
 ## Próximos passos (fora do escopo)
 
 - Implementar RLS de fato (ver `docs/RLS-PLAN.md`)

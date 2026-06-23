@@ -7,6 +7,7 @@ import { normalizarTelefone, telefoneValido } from "@/lib/otp";
 import { criarEnviarOtp } from "@/lib/otp-service";
 import { limparDocumento, validarDocumento } from "@/lib/lavajato-form";
 import { verificarTokenTurnstile } from "@/lib/turnstile/verificar-token";
+import type { ActionResult } from "@/lib/action-result";
 
 function mensagemErroCadastro(message: string): string {
   if (message.includes("rate limit")) {
@@ -15,14 +16,7 @@ function mensagemErroCadastro(message: string): string {
   return message;
 }
 
-function redirectCadastroErro(mensagem: string, slug?: string | null, role?: string | null): never {
-  const params = new URLSearchParams({ error: mensagem });
-  if (slug?.trim()) params.set("slug", slug.trim());
-  if (role?.trim()) params.set("role", role.trim());
-  redirect(`/cadastro?${params.toString()}`);
-}
-
-export async function signup(formData: FormData) {
+export async function signup(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
   const supabase = await createClient();
 
   const email = formData.get("email") as string;
@@ -38,26 +32,26 @@ export async function signup(formData: FormData) {
   const turnstileToken = (formData.get("turnstile_token") as string | null)?.trim() ?? "";
   const turnstile = await verificarTokenTurnstile(turnstileToken);
   if (!turnstile.ok) {
-    redirectCadastroErro(turnstile.error, slug, (formData.get("role") as string | null) ?? null);
+    return { error: turnstile.error };
   }
 
   if (!telefoneValido(telefone)) {
-    redirectCadastroErro("Informe um telefone válido com DDD.", slug, "lavajato");
+    return { error: "Informe um telefone válido com DDD." };
   }
 
   if (assumirLavajato) {
     if (role !== "LAVAJATO") {
-      redirectCadastroErro("Selecione o perfil de dono de lava-jato.", slug, "lavajato");
+      return { error: "Selecione o perfil de dono de lava-jato." };
     }
 
     const cnpj = limparDocumento(cnpjRaw ?? "");
     if (!validarDocumento("CNPJ", cnpj)) {
-      redirectCadastroErro("Informe um CNPJ válido.", slug, "lavajato");
+      return { error: "Informe um CNPJ válido." };
     }
 
     const lavaJato = await prisma.lavaJato.findFirst({ where: { slug } });
     if (!lavaJato) {
-      redirectCadastroErro("Lava-jato não encontrado.", slug, "lavajato");
+      return { error: "Lava-jato não encontrado." };
     }
   }
 
@@ -71,19 +65,11 @@ export async function signup(formData: FormData) {
   });
 
   if (error) {
-    redirectCadastroErro(
-      mensagemErroCadastro(error.message),
-      slug,
-      assumirLavajato ? "lavajato" : null
-    );
+    return { error: mensagemErroCadastro(error.message) };
   }
 
   if (!data.user) {
-    redirectCadastroErro(
-      "Não foi possível criar a conta.",
-      slug,
-      assumirLavajato ? "lavajato" : null
-    );
+    return { error: "Não foi possível criar a conta." };
   }
 
   await prisma.user.upsert({
@@ -114,14 +100,16 @@ export async function signup(formData: FormData) {
 
   const otp = await criarEnviarOtp(telefone);
   if (!otp.ok) {
-    redirectCadastroErro(otp.error, slug, assumirLavajato ? "lavajato" : null);
+    return { error: otp.error };
   }
 
   if (!data.session) {
-    redirect(
-      `/login?info=${encodeURIComponent("Conta criada! Confirme seu e-mail, faça login e valide o código enviado no WhatsApp.")}`
-    );
+    return {
+      info: "Conta criada! Confirme seu e-mail, faça login e valide o código enviado no WhatsApp.",
+      redirectTo: "/login",
+    };
   }
 
   redirect("/confirmar-telefone");
+  return {};
 }
